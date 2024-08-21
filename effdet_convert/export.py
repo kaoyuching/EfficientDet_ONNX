@@ -7,7 +7,7 @@ from effdet.efficientdet import HeadNet
 from effdet import create_dataset
 
 from effdet_convert.post_process import EffdetPostProcess
-from effder_convert.nms import EffdetNMS
+from effdet_convert.nms import EffdetNMS
 
 
 def get_model_config(model_name, num_classes: Optional[int] = None, img_size: Optional[int] = None):
