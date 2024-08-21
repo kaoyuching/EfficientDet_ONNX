@@ -13,6 +13,7 @@ class EffdetNMS(nn.Module):
         max_det_per_image: int = 100,
         soft_nms: bool = False
     ):
+        super().__init__()
         self.max_det_per_image = max_det_per_image
         self.soft_nms = soft_nms
         self.anchors = Anchors.from_config(model_config)
