@@ -6,9 +6,6 @@ from effdet import EfficientDet, get_efficientdet_config, DetBenchPredict
 from effdet.efficientdet import HeadNet
 from effdet import create_dataset
 
-from effdet_convert.post_process import EffdetPostProcess
-from effdet_convert.nms import EffdetNMS
-
 
 def get_model_config(model_name, num_classes: Optional[int] = None, img_size: Optional[int] = None):
     r"""
@@ -134,7 +131,7 @@ def export_effdet_post_process(model_config: Dict, out_folder: str):
 
 # export effdet nms
 def export_effdet_nms(model_config: Dict, out_folder: str, max_det_per_image: int = 100):
-    from effder_convert.nms import EffdetNMS
+    from effdet_convert.nms import EffdetNMS
 
     model = EffdetNMS(model_config, max_det_per_image=max_det_per_image)
     model.eval()
