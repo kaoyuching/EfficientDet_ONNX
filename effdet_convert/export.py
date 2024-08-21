@@ -116,7 +116,7 @@ def export_effdet_post_process(model_config: Dict, out_folder: str):
             input_names=input_names,
             output_names=['cls_outputs', 'box_outputs', 'indices', 'classes'],
             dynamic_axes={
-                **{k: {0: 'batch'} for k in output_names},
+                **{k: {0: 'batch'} for k in input_names},
                 'cls_outputs': {0: 'batch'},
                 'box_outputs': {0: 'batch'},
                 'indices': {0: 'batch'},
