@@ -1,3 +1,6 @@
+r"""
+Rewrite from effdet: https://github.com/rwightman/efficientdet-pytorch/blob/master/effdet/anchors.py
+"""
 from typing import Dict, Optional
 import torch
 import torch.nn as nn
@@ -68,20 +71,17 @@ class EffdetNMS(nn.Module):
         top_detection_idx = batched_nms(boxes, scores, classes, iou_threshold=0.5)
 
         top_detection_idx = top_detection_idx[:self.max_det_per_image]
-        boxes = boxes[top_detection_idx]
-        scores = scores[top_detection_idx, None]
-        classes = classes[top_detection_idx, None] + 1
+        boxes = boxes[top_detection_idx]  # shape (max_det, 4)
+        scores = scores[top_detection_idx, None]  # shape (max_det, 1)
+        classes = classes[top_detection_idx, None] + 1  # shape (max_det, 1)
 
         if img_scale is not None:
             boxes = boxes * img_scale
 
-        num_det = len(top_detection_idx)
-        detections = torch.cat([boxes, scores, classes.float()], dim=1)
-        if num_det < self.max_det_per_image:
-            detections = torch.cat([
-                detections,
-                torch.zeros((self.max_det_per_image - num_det, 6))
-            ], dim=0)
+        num_det = top_detection_idx.shape[0]
+        detections = torch.zeros((self.max_det_per_image, 6))
+        for i in range(self.max_det_per_image):
+            detections[i, ...] = torch.cat([boxes[i, ...], scores[i, ...], classes[i, ...].float()], dim=0)
         return detections
 
     def forward(self, cls_outputs, box_outputs, indices, classes, img_info: Optional[Dict[str, torch.Tensor]] = None):
