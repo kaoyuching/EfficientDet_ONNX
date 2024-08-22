@@ -1,8 +1,12 @@
+from typing import Tuple
 
 
-def decode_box(xmin, ymin, xmax, ymax, img_size, origin_w, origin_h):
-    scale_w = origin_w/img_size
-    scale_h = origin_h/img_size
+def decode_box(xmin, ymin, xmax, ymax, img_size: Tuple, origin_w, origin_h):
+    r"""
+    img_size: (h, w)
+    """
+    scale_w = origin_w/img_size[1]
+    scale_h = origin_h/img_size[0]
 
     center_x = (xmax + xmin)/2
     center_y = (ymax + ymin)/2
