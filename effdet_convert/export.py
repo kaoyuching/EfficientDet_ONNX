@@ -10,7 +10,7 @@ from effdet import create_dataset
 
 def get_model_config(model_name, num_classes: Optional[int] = None, img_size: Optional[int] = None):
     r"""
-    num_classes 1, img_size 512
+    Example: model_name="tf_efficientdet_d0", num_classes=1, img_size=512
     """
     config = get_efficientdet_config(model_name)
     config["num_classes"] = num_classes
@@ -71,6 +71,23 @@ def export_effdet_main(model_config: Dict, torch_model_path: str, out_folder: st
 
 # export effdet post process
 def export_effdet_post_process(model_config: Dict, out_folder: str):
+    r"""
+    if num_levels == 5 and image_size == [512, 512] and num_classes == 1:
+        dummy_cls_input_size = [
+            (1, 9, 64, 64),
+            (1, 9, 32, 32),
+            (1, 9, 16, 16),
+            (1, 9, 8, 8),
+            (1, 9, 4, 4),
+        ]
+        dummpy_box_input_size = [
+            (1, 36, 64, 64),
+            (1, 36, 32, 32),
+            (1, 36, 16, 16),
+            (1, 36, 8, 8),
+            (1, 36, 4, 4),
+        ]
+    """
     from effdet_convert.post_process import EffdetPostProcess
 
     model = EffdetPostProcess(model_config.num_levels, model_config.num_classes)
