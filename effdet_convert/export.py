@@ -1,8 +1,9 @@
 import os
 from typing import Dict, Optional
+import numpy as np
 import torch
 
-from effdet import EfficientDet, get_efficientdet_config, DetBenchPredict
+from effdet import EfficientDet, get_efficientdet_config
 from effdet.efficientdet import HeadNet
 from effdet import create_dataset
 
@@ -20,9 +21,7 @@ def get_model_config(model_name, num_classes: Optional[int] = None, img_size: Op
 # export main model
 def export_effdet_main(model_config: Dict, torch_model_path: str, out_folder: str, **model_kwargs):
     r'''
-    model_name: tf_efficientdet_d0
-
-    model_path = os.path.join("/home/doriskao/project/ocr/models", "detection2023_custom.pth")
+    model_path = os.path.join("~/project/ocr/models", "detection2023_custom.pth")
     '''
     model = EfficientDet(model_config, pretrained_backbone=True, **model_kwargs)  # class_out, box_out = model(x)
     model.class_net = HeadNet(model_config, num_outputs=model_config.num_classes)
@@ -35,17 +34,15 @@ def export_effdet_main(model_config: Dict, torch_model_path: str, out_folder: st
             model.load_state_dict(checkpoint)
         except:
             raise ValueError(f"cannot load model state from {torch_model_path}")
-    predict_model = DetBenchPredict(model)
+    model.eval()
 
     # Export the model
-    eval_model = predict_model.model
-    eval_model.eval()
-
     if not os.path.isdir(out_folder):
         os.makedirs(out_folder)
     output_fpath = os.path.join(out_folder, "effdet_main.onnx")
 
-    sample_input = torch.rand((1, 3, 512, 512))
+    img_size = tuple(model_config.image_size)
+    sample_input = torch.rand((1, 3, *img_size))
     output_names = [
         *(f"cls_output{i}" for i in range(model_config['num_levels'])),
         *(f"box_output{i}" for i in range(model_config['num_levels'])),
@@ -53,7 +50,7 @@ def export_effdet_main(model_config: Dict, torch_model_path: str, out_folder: st
 
     try:
         torch.onnx.export(
-            eval_model,
+            model,
             sample_input, # model input (or a tuple for multiple inputs)
             output_fpath,
             export_params=True, # store the trained parameter weights inside the model file
