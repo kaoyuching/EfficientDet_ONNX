@@ -77,21 +77,15 @@ def export_effdet_post_process(model_config: Dict, out_folder: str):
     model.eval()
 
     # dummy input
-    cls_input = [
-        torch.rand((1, 9, 64, 64)),
-        torch.rand((1, 9, 32, 32)),
-        torch.rand((1, 9, 16, 16)),
-        torch.rand((1, 9, 8, 8)),
-        torch.rand((1, 9, 4, 4)),
-    ]
+    level_ch = int(9 * model_config.num_classes)
+    img_size = np.array(model_config.image_size)
+    level_size = []
+    for i in range(model_config.num_levels):
+        _size = (img_size / (2**(i+3))).astype(int)
+        level_size.append(tuple(_size))
 
-    box_input = [
-        torch.rand((1, 36, 64, 64)),
-        torch.rand((1, 36, 32, 32)),
-        torch.rand((1, 36, 16, 16)),
-        torch.rand((1, 36, 8, 8)),
-        torch.rand((1, 36, 4, 4)),
-    ]
+    cls_input = [torch.rand((1, level_ch, *feature_size)) for feature_size in level_size]
+    box_input = [torch.rand((1, 36, *feature_size)) for feature_size in level_size]
 
     if not os.path.isdir(out_folder):
         os.makedirs(out_folder)
