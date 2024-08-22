@@ -34,6 +34,15 @@ class EffdetONNXInfer():
         self.post_session = ort.InferenceSession(post_model_path, sess_options=sess_options, provider=providers)
         self.nms_session = ort.InferenceSession(nms_model_path, sess_options=sess_options, provider=providers)
 
+    @property
+    def image_size(self) -> Tuple:
+        r"""
+        Return:
+            - image_size: (h, w)
+        """
+        sess = self.main_session.get_inputs()[0]
+        return tuple(sess.shape[2:])
+
     def _tensor_dtype_to_np_dtype(self, type_name: str):
         r"""
         'tensor(float)' -> np.float64
