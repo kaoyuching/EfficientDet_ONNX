@@ -16,7 +16,7 @@ The exported ONNX models are: `effdet_main.onnx`, `effdet_post.onnx`, and `effde
 Use `EffdetONNXInfer` to run Effdet inference.
 
 ## Example
-The example use the effdet to detect car number plate. The torch model is fine-tuned with opendata using package `effdet`, which can be downloaded [here](https://huggingface.co/doriskao/effdet_d0_car_number_plate).
+The example uses the effdet to detect car number plate. The torch model is fine-tuned with opendata using package `effdet`, which can be downloaded [here](https://huggingface.co/doriskao/effdet_d0_car_number_plate).
 
 1. First, convert the torch model to onnx models.
 
