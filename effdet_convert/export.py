@@ -19,7 +19,7 @@ def get_model_config(model_name, num_classes: Optional[int] = None, img_size: Op
 
 
 # export main model
-def export_effdet_main(model_config: Dict, torch_model_path: str, out_folder: str, **model_kwargs):
+def export_effdet_main(model_config: Dict, torch_model_path: str, out_folder: str, onnx_opset_version: int = 12, **model_kwargs):
     r'''
     model_path = os.path.join("~/project/ocr/models", "detection2023_custom.pth")
     '''
@@ -55,7 +55,7 @@ def export_effdet_main(model_config: Dict, torch_model_path: str, out_folder: st
             output_fpath,
             export_params=True, # store the trained parameter weights inside the model file
             do_constant_folding=True,
-            opset_version=12, # Operator support version
+            opset_version=onnx_opset_version, # Operator support version
             input_names=['input'],
             output_names=output_names,
             dynamic_axes={
@@ -70,7 +70,7 @@ def export_effdet_main(model_config: Dict, torch_model_path: str, out_folder: st
 
 
 # export effdet post process
-def export_effdet_post_process(model_config: Dict, out_folder: str):
+def export_effdet_post_process(model_config: Dict, out_folder: str, onnx_opset_version: int = 12):
     r"""
     if num_levels == 5 and image_size == [512, 512] and num_classes == 1:
         dummy_cls_input_size = [
@@ -120,7 +120,7 @@ def export_effdet_post_process(model_config: Dict, out_folder: str):
             output_fpath,
             export_params=True,
             do_constant_folding=True,
-            opset_version=12,
+            opset_version=onnx_opset_version,
             input_names=input_names,
             output_names=['cls_outputs', 'box_outputs', 'indices', 'classes'],
             dynamic_axes={
@@ -138,7 +138,7 @@ def export_effdet_post_process(model_config: Dict, out_folder: str):
 
 
 # export effdet nms
-def export_effdet_nms(model_config: Dict, out_folder: str, max_det_per_image: int = 100):
+def export_effdet_nms(model_config: Dict, out_folder: str, max_det_per_image: int = 100, onnx_opset_version: int = 12):
     from effdet_convert.nms import EffdetNMS
 
     model = EffdetNMS(model_config, max_det_per_image=max_det_per_image)
@@ -162,7 +162,7 @@ def export_effdet_nms(model_config: Dict, out_folder: str, max_det_per_image: in
             output_fpath,
             export_params=True,
             do_constant_folding=True,
-            opset_version=12,
+            opset_version=onnx_opset_version,
             input_names=['cls_outputs', 'box_outputs', 'indices', 'classes'],
             output_names=['output'],
             dynamic_axes={

@@ -11,6 +11,7 @@ parser.add_argument("-s", "--img_size", type=int, default=None)
 parser.add_argument("-c", "--num_classes", type=int, default=None)
 parser.add_argument("-o", "--out_folder", type=str, default="./onnx_models")
 parser.add_argument("--max_detect", type=int, default=100)
+parser.add_argument("--onnx_opset_version", type=int, default=12)
 
 args = parser.parse_args()
 
@@ -20,6 +21,7 @@ img_size = args.img_size
 num_classes = args.num_classes
 out_folder = args.out_folder
 max_detect = args.max_detect
+onnx_opset_version = args.onnx_opset_version
 
 if not os.path.exists(torch_model_path):
     raise ValueError("model path do not exist.")
@@ -27,9 +29,9 @@ if not os.path.exists(torch_model_path):
 
 model_config = get_model_config(model_name, num_classes=num_classes, img_size=img_size)
 
-export_main_status = export_effdet_main(model_config, torch_model_path, out_folder)
+export_main_status = export_effdet_main(model_config, torch_model_path, out_folder, onnx_opset_version=onnx_opset_version)
 print('export main status:', export_main_status)
-export_post_status = export_effdet_post_process(model_config, out_folder)
+export_post_status = export_effdet_post_process(model_config, out_folder, onnx_opset_version=onnx_opset_version)
 print('export post status:', export_post_status)
-export_nms_status = export_effdet_nms(model_config, out_folder, max_det_per_image=max_detect)
+export_nms_status = export_effdet_nms(model_config, out_folder, max_det_per_image=max_detect, onnx_opset_version=onnx_opset_version)
 print('export nms status:', export_nms_status)

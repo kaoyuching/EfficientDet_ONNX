@@ -5,7 +5,7 @@ Convert the EfficientDet model from PyTorch to ONNX.
 ## Export EfficientDet ONNX model
 
 ```=shell
-$ python ./main_export.py -n "tf_efficientdet_d0" -m "<pytorch model pth(.pth)>" -s <image size> -c <num classes> -o "<ONNX model folder>" --max_detect <max detection boxes>
+$ python ./main_export.py -n "tf_efficientdet_d0" -m "<pytorch model pth(.pth)>" -s <image size> -c <num classes> -o "<ONNX model folder>" --max_detect <max detection boxes> --onnx_opset_version <opset version>
 ```
 
 The efficientdet model is splited into three parts: main model, post process, and nms.   
@@ -21,7 +21,7 @@ The example uses the effdet to detect car number plate. The torch model is fine-
 1. First, convert the torch model to onnx models.
 
 ```=shell
-$ python ./main_export.py -n "tf_efficientdet_d0" -m "<model folder>/effdet_d0_car_number_plate.pth" -s 512 -c 1 -o "./onnx_models" --max_detect 10
+$ python ./main_export.py -n "tf_efficientdet_d0" -m "<model folder>/effdet_d0_car_number_plate.pth" -s 512 -c 1 -o "./onnx_models" --max_detect 10 --onnx_opset_version 12
 ```
 
 After successfully converting models, there will be three models under the folder `onnx_models`: `effdet_main.onnx`, `effdet_post.onnx`, `effdet_nms.onnx`
